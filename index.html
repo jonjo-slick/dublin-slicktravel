@@ -57,11 +57,26 @@
             gap: 32px;
         }
 
+        .partner-bar-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(223, 217, 198, 0.6);
+            margin-right: 16px;
+        }
+
         .partner-bar img {
-            height: 28px;
             width: auto;
             opacity: 0.92;
             filter: brightness(0) invert(1);
+        }
+
+        .partner-bar img.logo-slick {
+            height: 34px;
+        }
+
+        .partner-bar img.logo-seatsy {
+            height: 44px;
         }
 
         .partner-bar-divider {
@@ -71,8 +86,10 @@
         }
 
         @media (max-width: 768px) {
-            .partner-bar { height: 48px; }
-            .partner-bar img { height: 22px; }
+            .partner-bar { height: 52px; }
+            .partner-bar img.logo-slick { height: 26px; }
+            .partner-bar img.logo-seatsy { height: 34px; }
+            .partner-bar-label { display: none; }
         }
 
         /* --- Full Width Layout --- */
@@ -562,9 +579,10 @@
         
         <div class="partner-bar">
             <div class="partner-bar-inner">
-                <img src="Slick-Logo.png" alt="Slick Travel">
+                <span class="partner-bar-label">Presented by</span>
+                <img src="Slick-Logo.png" alt="Slick Travel" class="logo-slick">
                 <div class="partner-bar-divider"></div>
-                <img src="output-onlinepngtools.png" alt="Seatsy">
+                <img src="output-onlinepngtools.png" alt="Seatsy" class="logo-seatsy">
             </div>
         </div>
 
