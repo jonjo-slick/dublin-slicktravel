@@ -37,6 +37,44 @@
             color: inherit;
         }
 
+        /* --- Partner Header Bar --- */
+        .partner-bar {
+            width: 100%;
+            background: var(--primary-green);
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            height: 58px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .partner-bar-inner {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .partner-bar img {
+            height: 28px;
+            width: auto;
+            opacity: 0.92;
+            filter: brightness(0) invert(1);
+        }
+
+        .partner-bar-divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(223, 217, 198, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .partner-bar { height: 48px; }
+            .partner-bar img { height: 22px; }
+        }
+
         /* --- Full Width Layout --- */
         .page-wrapper {
             width: 100%;
@@ -522,6 +560,14 @@
 
     <div class="page-wrapper">
         
+        <div class="partner-bar">
+            <div class="partner-bar-inner">
+                <img src="Slick-Logo.png" alt="Slick Travel">
+                <div class="partner-bar-divider"></div>
+                <img src="output-onlinepngtools.png" alt="Seatsy">
+            </div>
+        </div>
+
         <header class="hero">
             <div class="hero-img-mobile"></div>
             
