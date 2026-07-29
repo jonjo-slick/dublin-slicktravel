@@ -124,6 +124,12 @@
                 z-index: 500;
                 background: var(--deep-green);
                 box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+                transform: translateY(100%);
+                transition: transform 0.4s ease;
+            }
+
+            .mobile-action-bar.visible {
+                transform: translateY(0);
             }
 
             .mobile-action-bar a {
@@ -563,19 +569,22 @@
         .why-section .section-title { color: white; }
 
         .why-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 30px;
-        }
-
-        @media (max-width: 992px) {
-            .why-grid { grid-template-columns: 1fr; }
         }
 
         .why-card {
             background: rgba(253, 252, 249, 0.04);
             border: 1px solid rgba(223, 217, 198, 0.25);
             padding: 40px 35px;
+            text-align: center;
+            flex: 1 1 300px;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .why-card h3 {
@@ -595,10 +604,13 @@
         }
 
         .why-card.proof img {
-            width: 100%;
+            width: auto;
+            height: 130px;
+            max-width: 100%;
+            object-fit: contain;
             display: block;
+            margin: 0 auto 20px auto;
             border: 1px solid rgba(223, 217, 198, 0.25);
-            margin-bottom: 20px;
         }
 
         .why-card.proof .proof-caption {
@@ -743,6 +755,10 @@
         .submit-btn:hover { background: #004d31; transform: translateY(-2px); }
 
         footer { padding: 80px 0; background: white; text-align: center; }
+
+        @media (max-width: 768px) {
+            footer { padding-bottom: 140px; }
+        }
 
         .footer-heading {
             font-family: 'Inter', sans-serif;
@@ -1102,14 +1118,17 @@
     <script>
         // Fade the persistent nav in once the hero beats have been scrolled past
         const nav = document.getElementById('persistentNav');
+        const mobileBar = document.querySelector('.mobile-action-bar');
         const lastBeat = document.querySelector('.hero-beat.beat-3');
 
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
                     nav.classList.add('solid');
+                    if (mobileBar) mobileBar.classList.add('visible');
                 } else if (entry.isIntersecting) {
                     nav.classList.remove('solid');
+                    if (mobileBar) mobileBar.classList.remove('visible');
                 }
             });
         }, { threshold: 0 });
