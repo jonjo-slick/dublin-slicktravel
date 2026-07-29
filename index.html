@@ -164,17 +164,44 @@
         .hero-beat.beat-2 { background-position: center 22%; }
         .hero-beat.beat-3 { background-position: center 40%; }
 
+        /* Split-panorama photo layer for beat 1 on wider screens */
+        .beat1-photos {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            z-index: 0;
+        }
+
+        .beat1-half {
+            flex: 1;
+            height: 100%;
+            background-size: cover;
+            background-position: center 18%;
+        }
+
+        .beat1-half.left { background-image: url('Vicks%20Jet.jpg'); }
+        .beat1-half.right {
+            background-image: url('Lewis%20Jet.jpg');
+            border-left: 2px solid rgba(223, 217, 198, 0.3);
+        }
+
         @media (max-width: 768px) {
             .hero-beat { background-attachment: scroll; }
-            .hero-beat.beat-1 { background-position: center 55%; }
+            .hero-beat.beat-1 {
+                background-position: center 15%;
+                background-image: url('Lewis%20Jet.jpg');
+            }
             .hero-beat.beat-2 { background-position: 62% 18%; }
             .hero-beat.beat-3 { background-position: center 35%; }
+
+            .beat1-photos { display: none; }
         }
 
         .hero-beat::before {
             content: '';
             position: absolute;
             inset: 0;
+            z-index: 1;
             background: linear-gradient(to top, rgba(0,20,13,0.96) 0%, rgba(0,20,13,0.78) 45%, rgba(0,20,13,0.58) 100%);
         }
 
@@ -590,12 +617,12 @@
         }
 
         .why-card.charity img {
-            height: 44px;
+            height: 68px;
             width: auto;
             max-width: 100%;
-            align-self: flex-start;
+            align-self: center;
             object-fit: contain;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .why-card.charity a.charity-link {
@@ -786,7 +813,11 @@
     <div class="page-wrapper">
 
         <!-- ============ HERO BEAT 1: THE HOOK ============ -->
-        <section class="hero-beat beat-1" style="background-image: url('2excel_Pano.jpg');">
+        <section class="hero-beat beat-1">
+            <div class="beat1-photos">
+                <div class="beat1-half left"></div>
+                <div class="beat1-half right"></div>
+            </div>
             <div class="hero-beat-content">
                 <span class="beat-eyebrow">Six Nations 2027</span>
                 <h1 class="beat-question">Ever wanted to fly on a private jet?</h1>
@@ -795,7 +826,7 @@
         </section>
 
         <!-- ============ HERO BEAT 2: THE HOST ============ -->
-        <section class="hero-beat beat-2" style="background-image: url('Geordan_Panoramic.jpg');">
+        <section class="hero-beat beat-2" style="background-image: url('Geordan%20Panoramic.jpg');">
             <div class="hero-beat-content">
                 <h1 class="beat-question">Geordan Murphy cordially invites you to the opening game of the 2027 Six Nations.</h1>
             </div>
@@ -803,7 +834,7 @@
         </section>
 
         <!-- ============ HERO BEAT 3: THE FIXTURE ============ -->
-        <section class="hero-beat beat-3" style="background-image: url('Ireland_v_England.jpg');">
+        <section class="hero-beat beat-3" style="background-image: url('Ireland%20v%20England.jpg');">
             <div class="hero-beat-content">
                 <span class="fixture-line">Friday Night Lights</span>
                 <h1 class="fixture-teams">Ireland<br>v England</h1>
@@ -990,7 +1021,7 @@
                 <h2 class="section-title scroll-reveal">Why Book With Us</h2>
                 <div class="why-grid scroll-reveal">
                     <div class="why-card proof">
-                        <img src="Why_book_with_us_.png" alt="IRFU official hospitality pricing showing sold out packages for Ireland v England">
+                        <img src="Why%20book%20with%20us%3F.png" alt="IRFU official hospitality pricing showing sold out packages for Ireland v England">
                         <span class="proof-caption">IRFU official pricing, correct at time of writing</span>
                         <h3>Official Hospitality Has Sold Out</h3>
                         <p>The IRFU's own hospitality packages for Ireland v England have sold out across every tier. Ireland play just two fixtures at the Aviva Stadium in 2027, and tickets are in high demand.</p>
