@@ -333,21 +333,13 @@
             transform: translateY(0);
         }
 
-        /* ============ GEORDAN INVITE VIDEO (beat 2) ============ */
-        .beat-photo-layer {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            background-size: cover;
-            background-position: center 22%;
-            filter: blur(0px);
-            opacity: 1;
-            transition: filter 1.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        /* ============ GEORDAN INVITE VIDEO (its own hero beat) ============ */
+        .hero-beat.video-beat {
+            background-color: var(--deep-green);
         }
 
-        .hero-beat.beat-2.video-active .beat-photo-layer {
-            filter: blur(28px);
-            opacity: 0;
+        .hero-beat.video-beat::before {
+            display: none;
         }
 
         .beat-video-layer {
@@ -355,14 +347,6 @@
             inset: 0;
             z-index: 0;
             overflow: hidden;
-            background-color: var(--deep-green);
-            opacity: 0;
-            transition: opacity 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-            transition-delay: 1.5s;
-        }
-
-        .hero-beat.beat-2.video-active .beat-video-layer {
-            opacity: 1;
         }
 
         .beat-video-layer video {
@@ -370,24 +354,6 @@
             height: 100%;
             object-fit: contain;
             display: block;
-        }
-
-        /* fade the darkening gradient and headline out once the video takes over beat 2 */
-        .hero-beat.beat-2::before {
-            transition: opacity 1.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        .hero-beat.beat-2.video-active::before {
-            opacity: 0;
-        }
-
-        .hero-beat.beat-2 .hero-beat-content {
-            transition: opacity 1s ease;
-        }
-
-        .hero-beat.beat-2.video-active .hero-beat-content {
-            opacity: 0;
-            pointer-events: none;
         }
 
         .sound-toggle {
@@ -400,8 +366,6 @@
             gap: 8px;
             background: rgba(0, 20, 13, 0.55);
             border: 1px solid rgba(223, 217, 198, 0.5);
-            opacity: 0;
-            transition: opacity 2s ease, background 0.3s ease, color 0.3s ease;
             color: var(--champagne);
             font-family: 'Inter', sans-serif;
             font-size: 0.7rem;
@@ -412,10 +376,7 @@
             border-radius: 999px;
             cursor: pointer;
             backdrop-filter: blur(6px);
-        }
-
-        .hero-beat.beat-2.video-active .sound-toggle {
-            opacity: 1;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .sound-toggle:hover,
@@ -960,8 +921,15 @@
         </section>
 
         <!-- ============ HERO BEAT 2: THE HOST ============ -->
-        <section class="hero-beat beat-2" id="geordanBeat">
-            <div class="beat-photo-layer" style="background-image: url('Geordan%20Panoramic.jpg');"></div>
+        <section class="hero-beat beat-2" style="background-image: url('Geordan%20Panoramic.jpg');">
+            <div class="hero-beat-content">
+                <h1 class="beat-question">Geordan Murphy cordially invites you to the opening game of the 2027 Six Nations.</h1>
+            </div>
+            <div class="scroll-cue">Scroll</div>
+        </section>
+
+        <!-- ============ HERO BEAT 2.5: GEORDAN'S VIDEO INVITE ============ -->
+        <section class="hero-beat video-beat" id="geordanBeat">
             <div class="beat-video-layer">
                 <video id="geordanVideo" muted loop playsinline preload="auto">
                     <source src="Geordan-Invite.MP4" type="video/mp4">
@@ -972,9 +940,6 @@
                 <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
                 <span class="toggle-label">Tap for sound</span>
             </button>
-            <div class="hero-beat-content">
-                <h1 class="beat-question">Geordan Murphy cordially invites you to the opening game of the 2027 Six Nations.</h1>
-            </div>
             <div class="scroll-cue">Scroll</div>
         </section>
 
@@ -1274,9 +1239,7 @@
 
         document.querySelectorAll('.hero-beat').forEach(beat => beatObserver.observe(beat));
 
-        // Geordan invite video: photo blurs out over 1.5s, the video crossfades in over the next 1.5s,
-        // then there's a 0.5s pause before actual playback begins (3.5s total from entering view).
-        // The sound button eases in over its own window so it's visible before playback starts.
+        // Geordan invite video: plays as-is once scrolled into view, with a 1s pause before it starts.
         const geordanBeat = document.getElementById('geordanBeat');
         const geordanVideo = document.getElementById('geordanVideo');
         const soundToggle = document.getElementById('soundToggle');
@@ -1285,20 +1248,14 @@
         if (geordanBeat && geordanVideo) {
             let playTimer = null;
 
-            const startReveal = () => {
-                // Prime the first frame so the video isn't blank while it's paused during the crossfade
-                geordanVideo.play().then(() => geordanVideo.pause()).catch(() => {});
-
-                geordanBeat.classList.add('video-active');
-
+            const startPlayback = () => {
                 playTimer = setTimeout(() => {
                     geordanVideo.play().catch(() => {});
-                }, 3500);
+                }, 1000);
             };
 
-            const cancelReveal = () => {
+            const cancelPlayback = () => {
                 geordanVideo.pause();
-                geordanBeat.classList.remove('video-active');
                 if (playTimer) {
                     clearTimeout(playTimer);
                     playTimer = null;
@@ -1308,9 +1265,9 @@
             const videoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        startReveal();
+                        startPlayback();
                     } else {
-                        cancelReveal();
+                        cancelPlayback();
                     }
                 });
             }, { threshold: 0.4 });
