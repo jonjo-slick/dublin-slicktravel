@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ireland v England 2027 | Slick Travel x Thrive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #006641;
+            --deep-green: #00311f;
+            --champagne: #dfd9c6;
+            --off-white: #fdfcf9;
+            --ink: #141414;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        h1, h2, h3, .display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* ============ PERSISTENT NAV ============ */
+        .persistent-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 49, 31, 0);
+            transition: background 0.5s ease, box-shadow 0.4s ease;
+            pointer-events: none;
+        }
+
+        .persistent-nav.solid {
+            background: rgba(0, 49, 31, 0.96);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+        }
+
+        .persistent-nav * { pointer-events: auto; }
+
+        .nav-row-actions {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 16px 5%;
+        }
+
+        .nav-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.6s ease 0.05s, transform 0.6s ease 0.05s;
+        }
+
+        .persistent-nav.solid .nav-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-actions a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            color: var(--champagne);
+            padding: 9px 16px;
+            border: 1px solid rgba(223, 217, 198, 0.4);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-actions a:hover {
+            background: var(--champagne);
+            color: var(--deep-green);
+        }
+
+        .nav-actions a.primary {
+            background: var(--champagne);
+            color: var(--deep-green);
+        }
+
+        .nav-actions a.primary:hover {
+            background: white;
+        }
+
+        /* mobile bottom action bar */
+        .mobile-action-bar {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .persistent-nav { display: none; }
+
+            .mobile-action-bar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 500;
+                background: var(--deep-green);
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+                transform: translateY(100%);
+                transition: transform 0.4s ease;
+            }
+
+            .mobile-action-bar.visible {
+                transform: translateY(0);
+            }
+
+            .mobile-action-bar a {
+                text-align: center;
+                padding: 13px 6px;
+                font-size: 0.66rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--champagne);
+                border-right: 1px solid rgba(223, 217, 198, 0.15);
+                border-top: 1px solid rgba(223, 217, 198, 0.15);
+            }
+
+            .mobile-action-bar a:nth-child(2n) { border-right: none; }
+            .mobile-action-bar a:nth-child(-n+2) { border-top: none; }
+
+            .mobile-action-bar a.primary {
+                background: var(--champagne);
+                color: var(--deep-green);
+            }
+        }
+
+        /* ============ HERO BEATS ============ */
+        .hero-beat {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow: hidden;
+        }
+
+        .hero-beat.beat-1 { background-position: center 65%; }
+        .hero-beat.beat-2 { background-position: center 22%; }
+        .hero-beat.beat-3 { background-position: center 40%; }
+
+        /* Split-panorama photo layer for beat 1 on wider screens */
+        .beat1-photos {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            z-index: 0;
+        }
+
+        .beat1-half {
+            flex: 1;
+            height: 100%;
+            background-size: cover;
+            background-position: center 18%;
+        }
+
+        .beat1-half.left { background-image: url('Vicks%20Jet.jpg'); }
+        .beat1-half.right {
+            background-image: url('Lewis%20Jet.jpg');
+            border-left: 2px solid rgba(223, 217, 198, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .hero-beat { background-attachment: scroll; }
+            .hero-beat.beat-1 {
+                background-position: center 15%;
+                background-image: url('Lewis%20Jet.jpg');
+            }
+            .hero-beat.beat-2 { background-position: 62% 18%; }
+            .hero-beat.beat-3 { background-position: center 35%; }
+
+            .beat1-photos { display: none; }
+        }
+
+        .hero-beat::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(to top, rgba(0,20,13,0.96) 0%, rgba(0,20,13,0.78) 45%, rgba(0,20,13,0.58) 100%);
+        }
+
+        .hero-beat-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 5% 100px 5%;
+            width: 100%;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero-beat-content { padding: 0 6% 130px 6%; }
+        }
+
+        .beat-eyebrow {
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--champagne);
+            margin-bottom: 18px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
+        }
+
+        .beat-question {
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-size: clamp(2.1rem, 5.2vw, 4rem);
+            line-height: 1.08;
+            max-width: 900px;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.45);
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 1s ease 0.15s, transform 1s ease 0.15s;
+        }
+
+        .hero-beat.in-view .beat-eyebrow,
+        .hero-beat.in-view .beat-question {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .beat-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--champagne);
+            margin-top: 22px;
+            max-width: 560px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+        }
+
+        .hero-beat.in-view .beat-sub {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* beat 3: the fixture, biggest typographic moment */
+        .fixture-line {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: clamp(1rem, 2.4vw, 1.4rem);
+            color: var(--champagne);
+            margin-bottom: 14px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.9s ease, transform 0.9s ease;
+        }
+
+        .fixture-teams {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 9vw, 7.5rem);
+            line-height: 0.95;
+            text-transform: uppercase;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 1s ease 0.15s, transform 1s ease 0.15s;
+        }
+
+        .fixture-underline {
+            width: 0;
+            height: 3px;
+            background: var(--champagne);
+            margin-top: 28px;
+            transition: width 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.6s;
+        }
+
+        .hero-beat.in-view .fixture-line,
+        .hero-beat.in-view .fixture-teams {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-beat.in-view .fixture-underline {
+            width: 160px;
+        }
+
+        .fixture-meta {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: var(--champagne);
+            margin-top: 24px;
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 1s ease 0.45s, transform 1s ease 0.45s;
+        }
+
+        .hero-beat.in-view .fixture-meta {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ GEORDAN INVITE VIDEO (beat 2) ============ */
+        .beat-video-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background-color: var(--deep-green);
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .hero-beat.beat-2.video-active .beat-video-layer {
+            opacity: 1;
+        }
+
+        .beat-video-layer video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sound-toggle {
+            position: absolute;
+            top: 30px;
+            right: 5%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 20, 13, 0.55);
+            border: 1px solid rgba(223, 217, 198, 0.5);
+            color: var(--champagne);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            transition: var(--transition);
+        }
+
+        .sound-toggle:hover,
+        .sound-toggle.is-unmuted {
+            background: var(--champagne);
+            color: var(--deep-green);
+        }
+
+        .sound-toggle svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sound-toggle {
+                top: 20px;
+                right: 6%;
+                padding: 9px 15px;
+                font-size: 0.62rem;
+            }
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            color: var(--champagne);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.75;
+        }
+
+        .scroll-cue::after {
+            content: '';
+            width: 1px;
+            height: 34px;
+            background: var(--champagne);
+            animation: scrollDrift 1.8s ease-in-out infinite;
+        }
+
+        @keyframes scrollDrift {
+            0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        /* ============ CONTENT SECTIONS ============ */
+        .page-wrapper { width: 100%; background-color: white; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 5%; }
+        section { padding: 100px 0; width: 100%; }
+
+        @media (max-width: 768px) { section { padding: 60px 0; } }
+
+        .bridge-section {
+            background: var(--deep-green);
+            color: white;
+            text-align: center;
+            padding: 90px 0;
+        }
+
+        .bridge-section p.display {
+            font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+            font-weight: 700;
+            font-style: italic;
+            max-width: 780px;
+            margin: 0 auto;
+            color: var(--champagne);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .content-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        .text-block h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--primary-green);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .text-block p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .swap-image-container {
+            width: 100%;
+            height: 550px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--champagne);
+        }
+
+        @media (max-width: 768px) { .swap-image-container { height: 400px; } }
+
+        .swap-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1.2s ease-in-out, transform 6s ease;
+        }
+
+        .swap-image.overlay { opacity: 0; }
+
+        @media (hover: hover) {
+            .swap-image-container:hover .swap-image.overlay { opacity: 1; }
+            .swap-image-container:hover .swap-image { transform: scale(1.06); }
+        }
+
+        .swap-image-container.active .swap-image.overlay { opacity: 1; }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: var(--primary-green);
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+        }
+
+        .day-label {
+            background: var(--primary-green);
+            color: white;
+            padding: 10px 25px;
+            display: inline-block;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            margin-bottom: 40px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .itinerary-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            margin-bottom: 45px;
+            gap: 30px;
+        }
+
+        .itinerary-item .time {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            color: var(--primary-green);
+            font-size: 1.4rem;
+        }
+
+        .itinerary-item .details b {
+            font-family: 'Playfair Display', serif;
+            display: block;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .itinerary-item .details span {
+            font-family: 'Inter', sans-serif;
+            color: #555;
+            font-size: 1.05rem;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .itinerary-item { grid-template-columns: 1fr; gap: 10px; }
+        }
+
+        .inclusion-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .inclusion-tag {
+            background: white;
+            border: 1px solid var(--champagne);
+            padding: 15px 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-green);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .video-section { background-color: var(--off-white); text-align: center; }
+
+        .video-container {
+            max-width: 1000px;
+            margin: 50px auto 0 auto;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 12px solid white;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            display: block;
+        }
+
+        .video-container:hover { transform: scale(1.02); }
+        .video-container img { width: 100%; display: block; }
+
+        .foundation-strip {
+            background: #f9f9f9;
+            text-align: center;
+            padding: 80px 0;
+            border-top: 1px solid var(--champagne);
+            border-bottom: 1px solid var(--champagne);
+        }
+
+        .foundation-logo { height: 100px; width: auto; margin-bottom: 30px; }
+        .foundation-strip p { font-family: 'Inter', sans-serif; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            height: 450px;
+            width: 100%;
+        }
+
+        .gallery-item {
+            background-size: cover;
+            background-position: center;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover { transform: scale(1.03); z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: 1fr 1fr; height: 600px; }
+        }
+
+        .why-section { background: var(--deep-green); }
+
+        .why-section .section-title { color: white; }
+
+        .why-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .why-card {
+            background: rgba(253, 252, 249, 0.04);
+            border: 1px solid rgba(223, 217, 198, 0.25);
+            padding: 40px 35px;
+            text-align: center;
+            flex: 1 1 300px;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .why-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--champagne);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .why-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 0;
+        }
+
+        .why-card.proof img {
+            width: auto;
+            height: 130px;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 20px auto;
+            border: 1px solid rgba(223, 217, 198, 0.25);
+        }
+
+        .why-card.proof .proof-caption {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(223, 217, 198, 0.6);
+            margin-bottom: 18px;
+            display: block;
+        }
+
+        .why-card.charity {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .why-card.charity img {
+            height: 68px;
+            width: auto;
+            max-width: 100%;
+            align-self: center;
+            object-fit: contain;
+            margin-bottom: 22px;
+        }
+
+        .why-card.charity a.charity-link {
+            display: inline-block;
+            margin-top: 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--champagne);
+            border-bottom: 1px solid var(--champagne);
+            padding-bottom: 3px;
+        }
+
+        .why-card.charity a.charity-link:hover { opacity: 0.75; }
+
+        .final-cta-block { padding: 100px 0 160px 0; text-align: center; background: #fdfcf9; }
+
+        @media (max-width: 768px) { .final-cta-block { padding-bottom: 120px; } }
+
+        .final-cta-block p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3rem;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            font-family: 'Inter', sans-serif;
+            padding: 20px 40px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 4px;
+        }
+
+        .btn-primary { background-color: var(--primary-green); color: white; }
+        .btn-whatsapp { background-color: #25D366; color: white; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        .registration-form {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            background: white;
+            padding: 40px;
+            border: 1px solid var(--champagne);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            font-family: 'Inter', sans-serif;
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ink);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus { outline: none; border-color: var(--primary-green); }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-green);
+            color: white;
+            padding: 18px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover { background: #004d31; transform: translateY(-2px); }
+
+        footer { padding: 80px 0; background: white; text-align: center; }
+
+        @media (max-width: 768px) {
+            footer { padding-bottom: 140px; }
+        }
+
+        .footer-heading {
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-logos a {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-logos a:hover { transform: scale(1.05); opacity: 0.8; }
+        .footer-logos img { height: 40px; width: auto; opacity: 0.9; }
+        .footer-logos .thrive { height: 55px; }
+        .footer-logos .seatsy { height: 40px; }
+
+        .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-beat { background-attachment: scroll; }
+            .beat-eyebrow, .beat-question, .beat-sub, .fixture-line, .fixture-teams, .fixture-meta, .scroll-reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Persistent floating nav: primary actions -->
+    <nav class="persistent-nav" id="persistentNav">
+        <div class="nav-row-actions">
+            <div class="nav-actions">
+                <a href="#itinerary">Itinerary</a>
+                <a href="#inclusions">What's Included</a>
+                <a href="#why-book-with-us">Why Book With Us</a>
+                <a href="#secure" class="primary">Secure Your Place</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile bottom action bar -->
+    <div class="mobile-action-bar">
+        <a href="#itinerary">Itinerary</a>
+        <a href="#inclusions">Included</a>
+        <a href="#why-book-with-us">Why Book</a>
+        <a href="#secure" class="primary">Secure Place</a>
+    </div>
+
+    <div class="page-wrapper">
+
+        <!-- ============ HERO BEAT 1: THE HOOK ============ -->
+        <section class="hero-beat beat-1">
+            <div class="beat1-photos">
+                <div class="beat1-half left"></div>
+                <div class="beat1-half right"></div>
+            </div>
+            <div class="hero-beat-content">
+                <span class="beat-eyebrow">Six Nations 2027</span>
+                <h1 class="beat-question">London to Dublin via Private Jet</h1>
+            </div>
+            <div class="scroll-cue">Scroll</div>
+        </section>
+
+        <!-- ============ HERO BEAT 2: THE HOST ============ -->
+        <section class="hero-beat beat-2" id="geordanBeat" style="background-image: url('Geordan%20Panoramic.jpg');">
+            <div class="beat-video-layer">
+                <video id="geordanVideo" muted loop playsinline preload="metadata">
+                    <source src="Geordan-Invite.mp4" type="video/mp4">
+                </video>
+            </div>
+            <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle sound on Geordan's invite">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                <span class="toggle-label">Tap for sound</span>
+            </button>
+            <div class="hero-beat-content">
+                <h1 class="beat-question">Geordan Murphy cordially invites you to the opening game of the 2027 Six Nations.</h1>
+            </div>
+            <div class="scroll-cue">Scroll</div>
+        </section>
+
+        <!-- ============ HERO BEAT 3: THE FIXTURE ============ -->
+        <section class="hero-beat beat-3" style="background-image: url('Ireland%20v%20England.jpg');">
+            <div class="hero-beat-content">
+                <span class="fixture-line">Friday Night Lights</span>
+                <h1 class="fixture-teams">Ireland<br>v England</h1>
+                <div class="fixture-underline"></div>
+                <p class="fixture-meta">Aviva Stadium, Dublin &nbsp;•&nbsp; Friday 5th February 2027 &nbsp;•&nbsp; Kick off 20:10</p>
+            </div>
+            <div class="scroll-cue">Scroll</div>
+        </section>
+
+        <!-- Bridge into the practical content -->
+        <div class="bridge-section scroll-reveal">
+            <div class="container">
+                <p class="display">Two nights. One unforgettable weekend. Here is how it works.</p>
+            </div>
+        </div>
+
+        <!-- Private Aviation -->
+        <section style="background: var(--off-white);">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-block scroll-reveal">
+                        <h2>Private Aviation</h2>
+                        <p>Depart via private jet from the Harrods Private Terminal, Stansted. Skip the commercial chaos and enjoy a seamless, VIP transit into the heart of Dublin.</p>
+                    </div>
+                    <div class="swap-image-container scroll-reveal">
+                        <div class="swap-image" style="background-image: url('IMG-0750-_1_.jpg');"></div>
+                        <div class="swap-image overlay" style="background-image: url('IMG-0753-_1_.jpg');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Host Section -->
+        <section>
+            <div class="container">
+                <div class="content-grid">
+                    <div class="swap-image-container scroll-reveal" style="order: 2;">
+                        <div class="swap-image" style="background-image: url('Geordan-Murphy-jpg-geordan-murphy-_1_.jpg');"></div>
+                        <div class="swap-image overlay" style="background-image: url('0-Murphy-9.jpg');"></div>
+                    </div>
+                    <div class="text-block scroll-reveal" style="order: 1;">
+                        <h2>Hosted by a Legend</h2>
+                        <p>Join Geordan Murphy for the weekend. Capped 72 times for Ireland, a Six Nations Grand Slam winner in 2009, and a British &amp; Irish Lions tourist, Geordan spent 16 years at the top of the club and international game with Leicester Tigers. He's on hand throughout the weekend to share the stories and insight from a career most fans only see from the stands.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Luxury Accommodation -->
+        <section style="background: var(--off-white);">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-block scroll-reveal">
+                        <h2>Luxury Accommodation</h2>
+                        <p>Enjoy our stay at <b>The Dean Dublin</b>, ideally located 600m from St Stephen's Green. Featuring a state-of-the-art gym, sauna, and heated relaxation pool.</p>
+                    </div>
+                    <div class="swap-image-container scroll-reveal">
+                        <div class="swap-image" style="background-image: url('dea-deandub-exterior-_1_.jpg');"></div>
+                        <div class="swap-image overlay" style="background-image: url('1215910474.jpg');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Itinerary -->
+        <section id="itinerary">
+            <div class="container">
+                <h2 class="section-title scroll-reveal">Itinerary</h2>
+                <div class="itinerary-day scroll-reveal">
+                    <div class="day-label">Friday 5th February</div>
+                    <div class="itinerary-item">
+                        <div class="time">10:00</div>
+                        <div class="details">
+                            <b>Departure: Harrods Private Terminal, Stansted</b>
+                            <span>Private jet departure featuring a bespoke low-altitude overflight.</span>
+                        </div>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="time">15:00</div>
+                        <div class="details">
+                            <b>The Dean Hotel Check-in</b>
+                            <span>Luxury boutique base in the heart of Dublin.</span>
+                        </div>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="time">17:00</div>
+                        <div class="details">
+                            <b>FIRE Steakhouse: Pre-Match Dinner</b>
+                            <span>A curated private dinner at the Dawson St terrace.</span>
+                        </div>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="time">20:10</div>
+                        <div class="details">
+                            <b>KICK OFF: IRE v ENG</b>
+                            <span>Category 1 Match Tickets at the Aviva Stadium.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="itinerary-day scroll-reveal" style="margin-top: 60px;">
+                    <div class="day-label">Saturday 6th February</div>
+                    <div class="itinerary-item">
+                        <div class="time">12:30</div>
+                        <div class="details">
+                            <b>6N Pub Takeover: Doheny & Nesbitt</b>
+                            <span>Landmark Irish rugby pub for private dining.</span>
+                        </div>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="time">14:10</div>
+                        <div class="details">
+                            <b>Six Nations Live Streaming</b>
+                            <span>SCO v ITA and FRA v WAL in our private lounge.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="itinerary-day scroll-reveal" style="margin-top: 60px;">
+                    <div class="day-label">Sunday 7th February</div>
+                    <div class="itinerary-item">
+                        <div class="time">11:00</div>
+                        <div class="details">
+                            <b>Private Jet Departure</b>
+                            <span>Private transfer for the return flight to Stansted.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What's Included -->
+        <section id="inclusions" style="background: var(--off-white);">
+            <div class="container" style="text-align: center;">
+                <h2 class="section-title scroll-reveal">What's Included</h2>
+                <div class="inclusion-grid scroll-reveal">
+                    <div class="inclusion-tag">Private Charter</div>
+                    <div class="inclusion-tag">2x Nights Accommodation</div>
+                    <div class="inclusion-tag">Breakfasts</div>
+                    <div class="inclusion-tag">Dinner & Drinks at FIRE</div>
+                    <div class="inclusion-tag">Category 1 Ticket</div>
+                    <div class="inclusion-tag">All Dublin Transfers</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Foundation -->
+        <div class="foundation-strip scroll-reveal">
+            <div class="container">
+                <img src="YOAST-logo.png" alt="Matt Hampson Foundation Logo" class="foundation-logo">
+                <h3>Supporting The Matt Hampson Foundation</h3>
+                <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">This weekend proudly raises money for vital MND Support Services and the Get Busy Living Centre.</p>
+            </div>
+        </div>
+
+        <!-- Video -->
+        <section class="video-section">
+            <div class="container">
+                <div class="text-block scroll-reveal" style="text-align: center;">
+                    <h2>Rome Highlights</h2>
+                    <p>Watch the highlights of our weekend in Rome for England vs Italy in 2026.</p>
+                </div>
+                <a href="https://youtu.be/E8Q-PvCaSC4" target="_blank" class="video-container scroll-reveal">
+                    <img src="Rome-Play-Gif.gif" alt="Rome Highlights Video">
+                </a>
+                <div class="scroll-reveal" style="margin-top: 50px; font-style: italic; font-size: 1.2rem; color: #555; max-width: 850px; margin-left: auto; margin-right: auto; line-height: 1.7;">
+                    "It was wonderful to have so many gorgeous experiences, with everything so thoughtfully planned, while, and this bit is really important to me, knowing that it was part of doing some good, and showing support."
+                    <span style="display: block; margin-top: 15px; font-weight: 700; font-style: normal; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; color: var(--primary-green); font-family: 'Inter', sans-serif;">Amy, Rome Guest</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery -->
+        <div class="gallery-grid scroll-reveal">
+            <div class="gallery-item" style="background-image: url('IMG-1591-_2_.jpg');"></div>
+            <div class="gallery-item" style="background-image: url('IMG-1673-_1_.jpg');"></div>
+            <div class="gallery-item" style="background-image: url('IMG-1664-_1_.jpg');"></div>
+            <div class="gallery-item" style="background-image: url('IMG-2342-_1_.jpg');"></div>
+        </div>
+
+        <!-- Why Book With Us -->
+        <section class="why-section" id="why-book-with-us">
+            <div class="container">
+                <h2 class="section-title scroll-reveal">Why Book With Us</h2>
+                <div class="why-grid scroll-reveal">
+                    <div class="why-card proof">
+                        <h3>Official Hospitality Has Sold Out</h3>
+                        <img src="Why%20book%20with%20us%3F.png" alt="IRFU official hospitality pricing showing sold out packages for Ireland v England">
+                        <p>The IRFU's own hospitality packages for Ireland v England have sold out across every tier. Ireland play just two fixtures at the Aviva Stadium in 2027, and tickets are in high demand.</p>
+                    </div>
+                    <div class="why-card">
+                        <h3>Every Detail Arranged</h3>
+                        <p>Private flights, hotel, match ticket, transfers, and Friday evening hospitality, all booked so you don't have to stress.</p>
+                    </div>
+                    <div class="why-card">
+                        <h3>The Whole Of Saturday To Explore Dublin</h3>
+                        <p>Saturday is yours. Explore the city at your own pace or rejoin us for a pub takeover and Six Nations action later in the day.</p>
+                    </div>
+                    <div class="why-card">
+                        <h3>A Weekend With A Rugby Legend</h3>
+                        <p>Geordan Murphy hosts throughout, sharing the insight and stories only a 72 cap international and Grand Slam winner can give.</p>
+                    </div>
+                    <div class="why-card charity">
+                        <h3>Raising Money For A Cause That Matters</h3>
+                        <img src="YOAST-logo.png" alt="Matt Hampson Foundation logo">
+                        <p>Every place booked supports the Matt Hampson Foundation, which helps young people rebuild their lives after life-changing injuries through sport, through its Get Busy Living Centre in Leicestershire.</p>
+                        <a href="https://www.matthampsonfoundation.org/" target="_blank" class="charity-link">About the Foundation</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section id="secure" class="final-cta-block">
+            <div class="container">
+                <div class="text-block scroll-reveal">
+                    <h2>Secure Your Place</h2>
+                    <p>Reach out for more details and pricing.</p>
+                </div>
+
+                <div class="btn-group scroll-reveal">
+                    <a href="https://wa.me/447806974739" target="_blank" class="btn btn-whatsapp">
+                        <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.66 20.15 9.3 19.81 8.1 19.14L7.81 18.98L4.67 19.8L5.5 16.71L5.32 16.42C4.59 15.26 4.21 13.92 4.21 12.54V11.91C4.21 7.6 7.73 4.08 12.05 4.08V3.67M15.4 12.72C15.19 12.62 14.18 12.12 14 12.05C13.82 11.97 13.68 11.93 13.55 12.12C13.41 12.31 13.04 12.75 12.93 12.88C12.82 13 12.7 13 12.5 12.91C12.28 12.8 11.58 12.58 10.75 11.84C10.1 11.26 9.67 10.54 9.54 10.32C9.41 10.11 9.53 10 9.63 9.89C9.73 9.79 9.84 9.66 9.94 9.54C10.05 9.42 10.08 9.33 10.15 9.19C10.22 9.06 10.19 8.94 10.14 8.84C10.1 8.74 9.72 7.82 9.57 7.43C9.41 7.06 9.25 7.11 9.14 7.11C9.04 7.11 8.91 7.11 8.78 7.11C8.65 7.11 8.44 7.16 8.27 7.34C8.1 7.53 7.62 8 7.62 8.96C7.62 9.92 8.32 10.84 8.42 10.97C8.52 11.11 9.79 13.06 11.73 13.91C12.2 14.11 12.55 14.22 12.84 14.32C13.3 14.47 13.73 14.45 14.06 14.4C14.43 14.34 15.19 13.94 15.35 13.5C15.5 13.06 15.5 12.69 15.46 12.62" /></svg>
+                        WhatsApp Slick Travel
+                    </a>
+                    <a href="mailto:jonjo@slicktravel.co.uk" class="btn btn-primary">Email Enquiries</a>
+                </div>
+
+                <div class="registration-form scroll-reveal">
+                    <h3 class="form-title">Register Your Interest</h3>
+                    <form action="https://formspree.io/f/xvzlpnrn" method="POST">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                        </div>
+                        <button type="submit" class="submit-btn">Send Details</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <span class="footer-heading">Find out more about us</span>
+                <div class="footer-logos">
+                    <a href="https://thrivesportsco.co.uk/" target="_blank"><img src="Thrive-primary.png" alt="Thrive Sports Logo" class="thrive"></a>
+                    <a href="https://slicktravel.co.uk/" target="_blank"><img src="Slick-Logo.png" alt="Slick Travel Logo"></a>
+                    <a href="https://www.2excelaviation.com/" target="_blank"><img src="2-Excel-Logo.jpg" alt="2Excel Aviation Logo"></a>
+                    <a href="https://www.seatsy.com/en" target="_blank"><img src="output-onlinepngtools.png" alt="Seatsy Logo" class="seatsy"></a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Fade the persistent nav in once the hero beats have been scrolled past
+        const nav = document.getElementById('persistentNav');
+        const mobileBar = document.querySelector('.mobile-action-bar');
+        const lastBeat = document.querySelector('.hero-beat.beat-3');
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                    nav.classList.add('solid');
+                    if (mobileBar) mobileBar.classList.add('visible');
+                } else if (entry.isIntersecting) {
+                    nav.classList.remove('solid');
+                    if (mobileBar) mobileBar.classList.remove('visible');
+                }
+            });
+        }, { threshold: 0 });
+
+        if (lastBeat) navObserver.observe(lastBeat);
+
+        // Trigger the in-view state for each hero beat as it centers in the viewport
+        const beatObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.hero-beat').forEach(beat => beatObserver.observe(beat));
+
+        // Geordan invite video: plays muted the moment it scrolls into view, pauses once it scrolls out,
+        // and unmutes on a single tap so it's guaranteed to have sound the moment the visitor asks for it.
+        const geordanBeat = document.getElementById('geordanBeat');
+        const geordanVideo = document.getElementById('geordanVideo');
+        const soundToggle = document.getElementById('soundToggle');
+        const toggleLabel = soundToggle ? soundToggle.querySelector('.toggle-label') : null;
+
+        if (geordanBeat && geordanVideo) {
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        geordanVideo.play().then(() => {
+                            geordanBeat.classList.add('video-active');
+                        }).catch(() => {});
+                    } else {
+                        geordanVideo.pause();
+                        geordanBeat.classList.remove('video-active');
+                    }
+                });
+            }, { threshold: 0.4 });
+
+            videoObserver.observe(geordanBeat);
+        }
+
+        if (soundToggle && geordanVideo) {
+            soundToggle.addEventListener('click', () => {
+                geordanVideo.muted = !geordanVideo.muted;
+                soundToggle.classList.toggle('is-unmuted', !geordanVideo.muted);
+                if (toggleLabel) toggleLabel.textContent = geordanVideo.muted ? 'Tap for sound' : 'Sound on';
+                if (!geordanVideo.paused) geordanVideo.play().catch(() => {});
+            });
+        }
+
+        // General scroll reveal for content sections
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
+
+        // Mobile swap image auto toggle
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            const swapContainers = document.querySelectorAll('.swap-image-container');
+            setInterval(() => {
+                swapContainers.forEach(container => container.classList.toggle('active'));
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
