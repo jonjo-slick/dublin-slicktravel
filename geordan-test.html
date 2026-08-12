@@ -167,7 +167,7 @@
         }
 
         .hero-beat.beat-1 { background-position: center 65%; }
-        .hero-beat.beat-2 { background-position: center 22%; }
+        /* legacy rule, superseded by .beat-photo-layer now that beat-2 uses a separate photo layer */
         .hero-beat.beat-3 { background-position: center 40%; }
 
         /* Split-panorama photo layer for beat 1 on wider screens */
@@ -197,7 +197,7 @@
                 background-position: center 15%;
                 background-image: url('Lewis%20Jet.jpg');
             }
-            .hero-beat.beat-2 { background-position: 62% 18%; }
+            .beat-photo-layer { background-position: 62% 18%; }
             .hero-beat.beat-3 { background-position: center 35%; }
 
             .beat1-photos { display: none; }
@@ -334,6 +334,22 @@
         }
 
         /* ============ GEORDAN INVITE VIDEO (beat 2) ============ */
+        .beat-photo-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-size: cover;
+            background-position: center 22%;
+            filter: blur(0px);
+            opacity: 1;
+            transition: filter 5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .hero-beat.beat-2.video-active .beat-photo-layer {
+            filter: blur(28px);
+            opacity: 0;
+        }
+
         .beat-video-layer {
             position: absolute;
             inset: 0;
@@ -341,7 +357,7 @@
             overflow: hidden;
             background-color: var(--deep-green);
             opacity: 0;
-            transition: opacity 1.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: opacity 5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .hero-beat.beat-2.video-active .beat-video-layer {
@@ -383,6 +399,8 @@
             gap: 8px;
             background: rgba(0, 20, 13, 0.55);
             border: 1px solid rgba(223, 217, 198, 0.5);
+            opacity: 0;
+            transition: opacity 2s ease, background 0.3s ease, color 0.3s ease;
             color: var(--champagne);
             font-family: 'Inter', sans-serif;
             font-size: 0.7rem;
@@ -393,7 +411,10 @@
             border-radius: 999px;
             cursor: pointer;
             backdrop-filter: blur(6px);
-            transition: var(--transition);
+        }
+
+        .hero-beat.beat-2.video-active .sound-toggle {
+            opacity: 1;
         }
 
         .sound-toggle:hover,
@@ -938,9 +959,10 @@
         </section>
 
         <!-- ============ HERO BEAT 2: THE HOST ============ -->
-        <section class="hero-beat beat-2" id="geordanBeat" style="background-image: url('Geordan%20Panoramic.jpg');">
+        <section class="hero-beat beat-2" id="geordanBeat">
+            <div class="beat-photo-layer" style="background-image: url('Geordan%20Panoramic.jpg');"></div>
             <div class="beat-video-layer">
-                <video id="geordanVideo" muted loop playsinline preload="metadata">
+                <video id="geordanVideo" muted loop playsinline preload="auto">
                     <source src="Geordan-Invite.MP4" type="video/mp4">
                 </video>
             </div>
@@ -1251,25 +1273,43 @@
 
         document.querySelectorAll('.hero-beat').forEach(beat => beatObserver.observe(beat));
 
-        // Geordan invite video: plays muted the moment it scrolls into view, pauses once it scrolls out,
-        // and unmutes on a single tap so it's guaranteed to have sound the moment the visitor asks for it.
+        // Geordan invite video: photo blurs out over 5s as the video crossfades in beneath it,
+        // the sound button eases in over its own 2s window, and actual playback only begins
+        // 2s after the crossfade finishes, giving people a moment to spot the sound button first.
         const geordanBeat = document.getElementById('geordanBeat');
         const geordanVideo = document.getElementById('geordanVideo');
         const soundToggle = document.getElementById('soundToggle');
         const toggleLabel = soundToggle ? soundToggle.querySelector('.toggle-label') : null;
 
         if (geordanBeat && geordanVideo) {
-            geordanVideo.addEventListener('playing', () => {
+            let playTimer = null;
+
+            const startReveal = () => {
+                // Prime the first frame so the video isn't blank while it's paused during the crossfade
+                geordanVideo.play().then(() => geordanVideo.pause()).catch(() => {});
+
                 geordanBeat.classList.add('video-active');
-            });
+
+                playTimer = setTimeout(() => {
+                    geordanVideo.play().catch(() => {});
+                }, 7000);
+            };
+
+            const cancelReveal = () => {
+                geordanVideo.pause();
+                geordanBeat.classList.remove('video-active');
+                if (playTimer) {
+                    clearTimeout(playTimer);
+                    playTimer = null;
+                }
+            };
 
             const videoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        geordanVideo.play().catch(() => {});
+                        startReveal();
                     } else {
-                        geordanVideo.pause();
-                        geordanBeat.classList.remove('video-active');
+                        cancelReveal();
                     }
                 });
             }, { threshold: 0.4 });
