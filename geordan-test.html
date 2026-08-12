@@ -342,7 +342,7 @@
             background-position: center 22%;
             filter: blur(0px);
             opacity: 1;
-            transition: filter 5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: filter 1.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .hero-beat.beat-2.video-active .beat-photo-layer {
@@ -357,7 +357,8 @@
             overflow: hidden;
             background-color: var(--deep-green);
             opacity: 0;
-            transition: opacity 5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: opacity 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition-delay: 1.5s;
         }
 
         .hero-beat.beat-2.video-active .beat-video-layer {
@@ -1273,9 +1274,9 @@
 
         document.querySelectorAll('.hero-beat').forEach(beat => beatObserver.observe(beat));
 
-        // Geordan invite video: photo blurs out over 5s as the video crossfades in beneath it,
-        // the sound button eases in over its own 2s window, and actual playback only begins
-        // 2s after the crossfade finishes, giving people a moment to spot the sound button first.
+        // Geordan invite video: photo blurs out over 1.5s, the video crossfades in over the next 1.5s,
+        // then there's a 0.5s pause before actual playback begins (3.5s total from entering view).
+        // The sound button eases in over its own window so it's visible before playback starts.
         const geordanBeat = document.getElementById('geordanBeat');
         const geordanVideo = document.getElementById('geordanVideo');
         const soundToggle = document.getElementById('soundToggle');
@@ -1292,7 +1293,7 @@
 
                 playTimer = setTimeout(() => {
                     geordanVideo.play().catch(() => {});
-                }, 7000);
+                }, 3500);
             };
 
             const cancelReveal = () => {
