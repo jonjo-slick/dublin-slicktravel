@@ -954,6 +954,9 @@
             <div class="scroll-cue">Scroll</div>
         </section>
 
+        <!-- Marker: nav bar turns solid once this passes under the top of the viewport -->
+        <div id="navTrigger" style="height: 1px;"></div>
+
         <!-- Bridge into the practical content -->
         <div class="bridge-section scroll-reveal">
             <div class="container">
@@ -1209,24 +1212,24 @@
     </div>
 
     <script>
-        // Fade the persistent nav in once the hero beats have been scrolled past
+        // Fade the persistent nav in once the marker just below the video has scrolled into view
         const nav = document.getElementById('persistentNav');
         const mobileBar = document.querySelector('.mobile-action-bar');
-        const lastBeat = document.querySelector('.hero-beat.video-beat');
+        const navTrigger = document.getElementById('navTrigger');
 
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+                if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
                     nav.classList.add('solid');
                     if (mobileBar) mobileBar.classList.add('visible');
-                } else if (entry.isIntersecting) {
+                } else {
                     nav.classList.remove('solid');
                     if (mobileBar) mobileBar.classList.remove('visible');
                 }
             });
         }, { threshold: 0 });
 
-        if (lastBeat) navObserver.observe(lastBeat);
+        if (navTrigger) navObserver.observe(navTrigger);
 
         // Trigger the in-view state for each hero beat as it centers in the viewport
         const beatObserver = new IntersectionObserver((entries) => {
