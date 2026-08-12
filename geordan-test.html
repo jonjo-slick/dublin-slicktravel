@@ -928,7 +928,18 @@
             <div class="scroll-cue">Scroll</div>
         </section>
 
-        <!-- ============ HERO BEAT 2.5: GEORDAN'S VIDEO INVITE ============ -->
+        <!-- ============ HERO BEAT 3: THE FIXTURE ============ -->
+        <section class="hero-beat beat-3" style="background-image: url('Ireland%20v%20England.jpg');">
+            <div class="hero-beat-content">
+                <span class="fixture-line">Friday Night Lights</span>
+                <h1 class="fixture-teams">Ireland<br>v England</h1>
+                <div class="fixture-underline"></div>
+                <p class="fixture-meta">Aviva Stadium, Dublin &nbsp;•&nbsp; Friday 5th February 2027 &nbsp;•&nbsp; Kick off 20:10</p>
+            </div>
+            <div class="scroll-cue">Scroll</div>
+        </section>
+
+        <!-- ============ GEORDAN'S VIDEO INVITE ============ -->
         <section class="hero-beat video-beat" id="geordanBeat">
             <div class="beat-video-layer">
                 <video id="geordanVideo" muted loop playsinline preload="auto">
@@ -940,17 +951,6 @@
                 <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
                 <span class="toggle-label">Tap for sound</span>
             </button>
-            <div class="scroll-cue">Scroll</div>
-        </section>
-
-        <!-- ============ HERO BEAT 3: THE FIXTURE ============ -->
-        <section class="hero-beat beat-3" style="background-image: url('Ireland%20v%20England.jpg');">
-            <div class="hero-beat-content">
-                <span class="fixture-line">Friday Night Lights</span>
-                <h1 class="fixture-teams">Ireland<br>v England</h1>
-                <div class="fixture-underline"></div>
-                <p class="fixture-meta">Aviva Stadium, Dublin &nbsp;•&nbsp; Friday 5th February 2027 &nbsp;•&nbsp; Kick off 20:10</p>
-            </div>
             <div class="scroll-cue">Scroll</div>
         </section>
 
@@ -1212,7 +1212,7 @@
         // Fade the persistent nav in once the hero beats have been scrolled past
         const nav = document.getElementById('persistentNav');
         const mobileBar = document.querySelector('.mobile-action-bar');
-        const lastBeat = document.querySelector('.hero-beat.beat-3');
+        const lastBeat = document.querySelector('.hero-beat.video-beat');
 
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
