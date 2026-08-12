@@ -341,11 +341,13 @@
             overflow: hidden;
             background-color: var(--deep-green);
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transform: scale(1.04);
+            transition: opacity 1.6s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .hero-beat.beat-2.video-active .beat-video-layer {
             opacity: 1;
+            transform: scale(1);
         }
 
         .beat-video-layer video {
@@ -388,6 +390,18 @@
             width: 16px;
             height: 16px;
             flex-shrink: 0;
+        }
+
+        .sound-toggle .icon-on {
+            display: none;
+        }
+
+        .sound-toggle.is-unmuted .icon-off {
+            display: none;
+        }
+
+        .sound-toggle.is-unmuted .icon-on {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -914,8 +928,9 @@
                     <source src="Geordan-Invite.mp4" type="video/mp4">
                 </video>
             </div>
-            <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle sound on Geordan's invite">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false" aria-label="Turn sound on">
+                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
                 <span class="toggle-label">Tap for sound</span>
             </button>
             <div class="hero-beat-content">
@@ -1228,12 +1243,14 @@
         const toggleLabel = soundToggle ? soundToggle.querySelector('.toggle-label') : null;
 
         if (geordanBeat && geordanVideo) {
+            geordanVideo.addEventListener('playing', () => {
+                geordanBeat.classList.add('video-active');
+            });
+
             const videoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        geordanVideo.play().then(() => {
-                            geordanBeat.classList.add('video-active');
-                        }).catch(() => {});
+                        geordanVideo.play().catch(() => {});
                     } else {
                         geordanVideo.pause();
                         geordanBeat.classList.remove('video-active');
@@ -1245,11 +1262,16 @@
         }
 
         if (soundToggle && geordanVideo) {
+            let unmuted = false;
+            geordanVideo.muted = true;
+
             soundToggle.addEventListener('click', () => {
-                geordanVideo.muted = !geordanVideo.muted;
-                soundToggle.classList.toggle('is-unmuted', !geordanVideo.muted);
-                if (toggleLabel) toggleLabel.textContent = geordanVideo.muted ? 'Tap for sound' : 'Sound on';
-                if (!geordanVideo.paused) geordanVideo.play().catch(() => {});
+                unmuted = !unmuted;
+                geordanVideo.muted = !unmuted;
+                soundToggle.classList.toggle('is-unmuted', unmuted);
+                soundToggle.setAttribute('aria-pressed', String(unmuted));
+                soundToggle.setAttribute('aria-label', unmuted ? 'Turn sound off' : 'Turn sound on');
+                if (toggleLabel) toggleLabel.textContent = unmuted ? 'Sound on' : 'Tap for sound';
             });
         }
 
